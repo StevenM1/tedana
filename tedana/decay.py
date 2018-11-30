@@ -90,7 +90,11 @@ def fit_decay(data, tes, mask, masksum, return_residuals=False):
 
         fit = np.linalg.lstsq(X, log_data, rcond=None)
         betas = fit[0]
-        residuals = fit[1]
+        if echo == 1:
+            # first echo has no residuals (perfect fit)
+            residuals = np.zeros_like(betas[0, :])
+        else:
+            residuals = fit[1]
         t2s = 1. / betas[1, :].T
         s0 = np.exp(betas[0, :]).T
 

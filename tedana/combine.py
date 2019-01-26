@@ -43,8 +43,8 @@ def _combine_t2s(data, tes, ft2s):
 
         # If all values across echos are 0, set to 1 to avoid
         # divide-by-zero errors
-        ax0_idx, ax2_idx = np.where(np.all(alpha == 0, axis=1))
-        alpha[ax0_idx, :, ax2_idx] = 1.
+    ax0_idx, ax2_idx = np.where(np.all(alpha == 0, axis=1))
+    alpha[ax0_idx, :, ax2_idx] = 1.
     combined = np.average(data, axis=1, weights=alpha)
     return combined
 
@@ -69,7 +69,7 @@ def _combine_ste(data, tes):
         Data combined across echoes according to SNR/signal.
     """
     n_vols = data.shape[-1]
-    alpha = data.mean(axis=-1) * tes
+    alpha = (data.mean(axis=-1)/data.std(axis=-1)) * tes  #sm: actually use SNR instead of signal
     alpha = np.tile(alpha[:, :, np.newaxis], (1, 1, n_vols))
     combined = np.average(data, axis=1, weights=alpha)
     return combined
